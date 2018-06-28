@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+from yandex_translate import YandexTranslate
 from configs.config import Config
 import numpy as np
 from sklearn import linear_model
@@ -11,13 +12,15 @@ class Classifier:
         self.modules = {}
         self.input_vector = []
         self.output_vector = []
-        self.config = Config() 
+        self.config = Config()
+        self.translator = YandexTranslate(self.config.get_token_yandex()) 
 
     def addVocabulary(self, phrase):
-            words = phrase.split(' ')
-            for word in words:
-                if self.formatWord(word) not in self.vocabulary:
-                    self.vocabulary.append(self.formatWord(word))
+        phrase = self.translator.translate(phrase, 'pt-en')['text'][0]
+        words = phrase.split(' ')
+        for word in words:
+            if self.formatWord(word) not in self.vocabulary:
+                self.vocabulary.append(self.formatWord(word))
 
     def formatWord(self, word):
         word = word.lower()
@@ -63,6 +66,7 @@ class Classifier:
         self.model = linear_model.LinearRegression().fit(input_vector, output_vector)
 
     def predict(self, name):
+        name = self.translator.translate(name, 'pt-en')['text'][0]
         vector = self.vectorize(name)
         index = round(self.model.predict(np.array([ vector ])),0)
         if str(int(index)) in self.modules:

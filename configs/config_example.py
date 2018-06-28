@@ -5,6 +5,7 @@ class Config:
         self._email = ""
         self._password = ""
         self._stepWords = []
+        self._token_Yandex = ""
         self.read_step_words()
 
     def read_step_words(self):
@@ -23,3 +24,6 @@ class Config:
     
     def getStepWords(self):
         return self._stepWords
+    
+    def get_token_yandex(self):
+        return self._token_Yandex
