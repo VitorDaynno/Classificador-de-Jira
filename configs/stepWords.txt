@@ -1,0 +1,1 @@
+word_example_1;word_example_2;word_example_3

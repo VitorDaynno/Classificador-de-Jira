@@ -1,24 +1,22 @@
 #-*- coding: utf-8 -*-
-from config import Config
+from configs.config import Config
 import numpy as np
 from sklearn import linear_model
 
 class Classifier:
 
     def __init__(self):
-        print('Iniciando Net')
+        print('Iniciando Classifier')
         self.vocabulary = []
         self.modules = {}
         self.input_vector = []
         self.output_vector = []
-        self.config = Config()
-        self.vocabularyBase = open("vocabularyBase.txt","w") 
+        self.config = Config() 
 
     def addVocabulary(self, phrase):
             words = phrase.split(' ')
             for word in words:
                 if self.formatWord(word) not in self.vocabulary:
-                    self.vocabularyBase.write(self.formatWord(word) + "\n")
                     self.vocabulary.append(self.formatWord(word))
 
     def formatWord(self, word):
@@ -32,6 +30,9 @@ class Classifier:
         word = word.replace("\r","")
         word = word.replace(".","")
         word = word.replace("!","")
+        word = word.replace(":","")
+        word = word.replace("-","")
+        word = word.replace(",","")
         
         return word
     
@@ -59,17 +60,16 @@ class Classifier:
         input_vector = np.array(self.input_vector)
         output_vector = np.array(self.output_vector)
 
-        #cria o modelo e faz o treinamento (fit)
         self.model = linear_model.LinearRegression().fit(input_vector, output_vector)
 
     def predict(self, name):
-            vector = self.vectorize(name)
-            index = round(self.model.predict(np.array([ vector ])),0)
-	    if str(int(index)) in self.modules:           
-            	print self.modules[str(int(index))]
-                return self.modules[str(int(index))]
-	    else:
-		print "modulo nao encontrado"
+        vector = self.vectorize(name)
+        index = round(self.model.predict(np.array([ vector ])),0)
+        if str(int(index)) in self.modules:
+            return self.modules[str(int(index))]
+        else:
+            return "Modulo não encontrado"
+
 
     def vectorize(self,phrase):
         i = 0
@@ -82,5 +82,8 @@ class Classifier:
             i = i + 1
         return vector
 
-    def closeVocabularyBase(self):
-        self.vocabularyBase.close()
+    def generateVocabularyBase(self):
+        vocabularyBase = open("configs/vocabularyBase.txt","w")       
+        for word in self.vocabulary:
+            vocabularyBase.write(word + "\n")
+        vocabularyBase.close()

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import json
 from jira_Api import Jira_Api
 from classifier import Classifier
@@ -24,7 +24,7 @@ for jira in jiras:
 
 jiras.close()
 
-classifier.closeVocabularyBase()
+classifier.generateVocabularyBase()
 classifier.removeStepWords()
 classifier.createDatabaseTrainer(items)
 classifier.createClassifier()
@@ -35,7 +35,7 @@ def classifiers():
     name = jira_api.getText(body["key"])
     response = classifier.predict(name)
 
-    return json.dumps(response)
+    return jsonify({"module": response})
 
 if __name__ == "__main__":
     app.run()

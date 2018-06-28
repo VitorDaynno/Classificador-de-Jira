@@ -1,4 +1,4 @@
-from config import Config
+from configs.config import Config
 import json
 import requests
 from requests.auth import HTTPBasicAuth
