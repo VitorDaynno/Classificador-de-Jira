@@ -36,7 +36,12 @@ class Classifier:
         word = word.replace(":","")
         word = word.replace("-","")
         word = word.replace(",","")
-        
+        word = word.replace("<","")
+        word = word.replace(">","")
+        word = word.replace("[","")
+        word = word.replace("]","")
+        word = word.replace("?","")
+                
         return word
     
     def removeStepWords(self):
