@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 from yandex_translate import YandexTranslate
-from configs.config import Config
 import numpy as np
 from sklearn import linear_model
+from configs.config import Config
 
 class Classifier:
 
@@ -15,14 +15,14 @@ class Classifier:
         self.config = Config()
         self.translator = YandexTranslate(self.config.get_token_yandex()) 
 
-    def addVocabulary(self, phrase):
+    def add_vocabulary(self, phrase):
         phrase = self.translator.translate(phrase, 'pt-en')['text'][0]
         words = phrase.split(' ')
         for word in words:
-            if self.formatWord(word) not in self.vocabulary:
-                self.vocabulary.append(self.formatWord(word))
+            if self._format_word(word) not in self.vocabulary:
+                self.vocabulary.append(self._format_word(word))
 
-    def formatWord(self, word):
+    def _format_word(self, word):
         word = word.lower()
         word = word.replace('"','')
         word = word.replace("'","")
@@ -44,13 +44,13 @@ class Classifier:
                 
         return word
     
-    def removeStepWords(self):
-        stepWords = self.config.getStepWords()
-        for stepWord in stepWords:
-            if(stepWord in self.vocabulary):
-                self.vocabulary.remove(stepWord)
+    def remove_step_words(self):
+        step_words = self.config.get_step_words()
+        for step_word in step_words:
+            if(step_word in self.vocabulary):
+                self.vocabulary.remove(step_word)
 
-    def createDatabaseTrainer(self, items):
+    def create_database_trainer(self, items):
         for item in items:
             i = 0
             vector = []
@@ -64,7 +64,7 @@ class Classifier:
             self.input_vector.append(vector)
             self.output_vector.append(item["moduleId"])
     
-    def createClassifier(self):
+    def create_classifier(self):
         input_vector = np.array(self.input_vector)
         output_vector = np.array(self.output_vector)
 
@@ -91,8 +91,8 @@ class Classifier:
             i = i + 1
         return vector
 
-    def generateVocabularyBase(self):
-        vocabularyBase = open("configs/vocabularyBase.txt","w")       
+    def generate_vocabulary_base(self):
+        vocabulary_base = open("configs/vocabularyBase.txt","w")       
         for word in self.vocabulary:
-            vocabularyBase.write(word + "\n")
-        vocabularyBase.close()
+            vocabulary_base.write(word + "\n")
+        vocabulary_base.close()

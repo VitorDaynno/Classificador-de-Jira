@@ -1,10 +1,10 @@
 class Config:
 
     def __init__(self):
-        self._url_Project = ""
+        self._url_project = ""
         self._email = ""
         self._password = ""
-        self._stepWords = []
+        self._step_words = []
         self._token_Yandex = ""
         self.read_step_words()
 
@@ -13,17 +13,17 @@ class Config:
         self._stepWords = fileStepWords.read().split(";")
         fileStepWords.close()
 
-    def getUrlIssue(self):
-        return self._url_Project
-    
-    def getEmail(self):
+    def get_url_issue(self):
+        return self._url_project
+
+    def get_email(self):
         return self._email
-    
-    def getPassword(self):
+
+    def get_password(self):
         return self._password
-    
-    def getStepWords(self):
+
+    def get_step_words(self):
         return self._stepWords
-    
+
     def get_token_yandex(self):
         return self._token_Yandex
