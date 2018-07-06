@@ -41,7 +41,16 @@ class Classifier:
         word = word.replace("[","")
         word = word.replace("]","")
         word = word.replace("?","")
-                
+        word = word.replace("+","")
+        word = word.replace("”","")
+        word = word.replace(";","")
+        word = word.replace("*","")
+        word = word.replace("~","")
+        word = word.replace("_","")
+        word = word.replace("¿","")      
+        word = word.replace("^","")
+        word = word.replace("’","")              
+        
         return word
     
     def remove_step_words(self):
