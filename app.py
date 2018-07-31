@@ -3,12 +3,14 @@ from flask import Flask, request, jsonify
 import json
 from jira_Api import Jira_Api
 from classifier import Classifier
+from mongo_DAO import Mongo_DAO
 
 app = Flask("app")
 jiras = open('jira.csv')
 
 jira_api = Jira_Api()
 classifier = Classifier()
+dao = Mongo_DAO('localhost', 27017, 'classifier')
 items = []
 
 for jira in jiras:
@@ -16,10 +18,13 @@ for jira in jiras:
     item = {}
     item["key"] = aux[0]
     item["module"] = aux[1]
-    item["moduleId"] = aux[2].replace("\r\n","")
+    item["moduleId"] = aux[2].replace("\n","")
+    dao.insert('jiras',item)
+    print(item)
     name = jira_api.get_text(aux[0])
     item["name"] = name
     classifier.add_vocabulary(name)
+    
     items.append(item)    
 
 jiras.close()

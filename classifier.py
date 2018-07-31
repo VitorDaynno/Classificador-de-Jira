@@ -28,7 +28,7 @@ class Classifier:
         word = word.replace("'","")
         word = word.replace("(","")
         word = word.replace(")","")
-        word = word.encode('utf-8')
+        #word = word.encode('utf-8')
         word = word.replace("\n","")
         word = word.replace("\r","")
         word = word.replace(".","")
@@ -50,7 +50,7 @@ class Classifier:
         word = word.replace("¿","")      
         word = word.replace("^","")
         word = word.replace("’","")              
-        
+        print(word)
         return word
     
     def remove_step_words(self):
@@ -65,7 +65,7 @@ class Classifier:
             vector = []
             self.modules[item["moduleId"]] = item["module"]
             while i < len(self.vocabulary):
-                if self.vocabulary[i] in item["name"].encode("utf-8").split(" "):
+                if self.vocabulary[i] in item["name"].split(" "):
                     vector.append(1)
                 else:
                     vector.append(0)
@@ -82,7 +82,9 @@ class Classifier:
     def predict(self, name):
         name = self.translator.translate(name, 'pt-en')['text'][0]
         vector = self.vectorize(name)
-        index = round(self.model.predict(np.array([ vector ])),0)
+        print(self.model.predict(np.array([ vector ])))
+        index = round(self.model.predict(np.array([ vector ]))[0],0)
+        print(index)
         if str(int(index)) in self.modules:
             return self.modules[str(int(index))]
         else:
@@ -93,7 +95,7 @@ class Classifier:
         i = 0
         vector = []
         while i < len(self.vocabulary):
-            if self.vocabulary[i] in phrase.encode("utf-8").split(" "):
+            if self.vocabulary[i] in phrase.split(" "):
                 vector.append(1)
             else:
                 vector.append(0)

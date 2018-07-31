@@ -13,7 +13,7 @@ class Jira_Api:
         print('Iniciando busca em ' + key)    
         url = self.config.get_url_issue().replace('{issueIdOrKey}',key)
         response = requests.get(url, auth=HTTPBasicAuth(self.config.get_email(), self.config.get_password()))
-        jiras = json.loads(response.content)
+        jiras = response.json()
 
         description = jiras["fields"]["description"] if jiras["fields"]["description"] != None else ""
         return jiras["fields"]["summary"] + " " + description
