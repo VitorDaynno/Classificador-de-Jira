@@ -74,7 +74,8 @@ class Classifier:
                     vector.append(0)
                 i = i + 1
             self.input_vector.append(vector)
-            self.output_vector.append(item["moduleId"])
+            self.output_vector.append(int(item["moduleId"]))
+            self.dao.update('jiras', {'key': item["key"] }, {'$set': { 'vectorIn': vector, 'out': int(item["moduleId"]) }})
     
     def create_classifier(self):
         input_vector = np.array(self.input_vector)
@@ -111,3 +112,6 @@ class Classifier:
             vocabulary_base.write(word + "\n")
 
         vocabulary_base.close()
+    
+    def set_vocabulary(self,base):
+        self.vocabulary = base

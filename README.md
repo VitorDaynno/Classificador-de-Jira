@@ -2,21 +2,21 @@ Dependencies:
 
 * Flask
 ```
-    pip install flask
+    pip3 install flask
 ```
 * Yandex translate
 ```
-    pip install yandex.transalate
+    pip3 install yandex.transalate
 ```
 * Numpy
 ```
-    pip install numpy
+    pip3 install numpy
 ```
 * Scikit-learn
 ```
-    pip install sklearn
+    pip3 install sklearn
 ```
 * SciPy
 ```
-    pip install scipy
+    pip3 install scipy
 ```

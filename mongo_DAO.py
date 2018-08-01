@@ -13,3 +13,7 @@ class Mongo_DAO:
     def update(self, collection, filters, fields):
         cursor = self._db[collection]
         cursor.update(filters, fields)
+
+    def find(self, collection, filters):
+        cursor = self._db[collection]
+        return cursor.find(filters)
