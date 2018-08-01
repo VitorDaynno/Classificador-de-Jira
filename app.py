@@ -19,12 +19,10 @@ for jira in jiras:
     item["key"] = aux[0]
     item["module"] = aux[1]
     item["moduleId"] = aux[2].replace("\n","")
-    dao.insert('jiras',item)
-    print(item)
     name = jira_api.get_text(aux[0])
-    item["name"] = name
-    classifier.add_vocabulary(name)
-    
+    item["text"] = name
+    dao.insert('jiras', item)
+    item['textEn'] = classifier.add_vocabulary(item['key'], name)    
     items.append(item)    
 
 jiras.close()

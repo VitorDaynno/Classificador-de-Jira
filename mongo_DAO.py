@@ -9,3 +9,7 @@ class Mongo_DAO:
     def insert(self, collection, item):
         cursor = self._db[collection]
         cursor.insert(item)
+    
+    def update(self, collection, filters, fields):
+        cursor = self._db[collection]
+        cursor.update(filters, fields)

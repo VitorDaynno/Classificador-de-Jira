@@ -3,6 +3,7 @@ from yandex_translate import YandexTranslate
 import numpy as np
 from sklearn import linear_model
 from configs.config import Config
+from mongo_DAO import Mongo_DAO
 
 class Classifier:
 
@@ -13,44 +14,45 @@ class Classifier:
         self.input_vector = []
         self.output_vector = []
         self.config = Config()
-        self.translator = YandexTranslate(self.config.get_token_yandex()) 
+        self.translator = YandexTranslate(self.config.get_token_yandex())
+        self.dao = Mongo_DAO('localhost', 27017, 'classifier') 
 
-    def add_vocabulary(self, phrase):
-        phrase = self.translator.translate(phrase, 'pt-en')['text'][0]
-        words = phrase.split(' ')
+    def add_vocabulary(self, key, phrase):
+        phrase = self.translator.translate(self._format_word(phrase), 'pt-en')['text'][0]
+        words = self._format_word(phrase).split(' ')
+        self.dao.update('jiras', {'key': key }, {'$set': { 'textEn': phrase, 'words': words }})
         for word in words:
             if self._format_word(word) not in self.vocabulary:
                 self.vocabulary.append(self._format_word(word))
+        return phrase
 
     def _format_word(self, word):
         word = word.lower()
-        word = word.replace('"','')
-        word = word.replace("'","")
-        word = word.replace("(","")
-        word = word.replace(")","")
-        #word = word.encode('utf-8')
-        word = word.replace("\n","")
-        word = word.replace("\r","")
-        word = word.replace(".","")
-        word = word.replace("!","")
-        word = word.replace(":","")
-        word = word.replace("-","")
-        word = word.replace(",","")
-        word = word.replace("<","")
-        word = word.replace(">","")
-        word = word.replace("[","")
-        word = word.replace("]","")
-        word = word.replace("?","")
-        word = word.replace("+","")
-        word = word.replace("”","")
-        word = word.replace(";","")
-        word = word.replace("*","")
-        word = word.replace("~","")
-        word = word.replace("_","")
-        word = word.replace("¿","")      
-        word = word.replace("^","")
-        word = word.replace("’","")              
-        print(word)
+        word = word.replace('"'," ")
+        word = word.replace("'"," ")
+        word = word.replace("("," ")
+        word = word.replace(")"," ")
+        word = word.replace("\n"," ")
+        word = word.replace("\r"," ")
+        word = word.replace("."," ")
+        word = word.replace("!"," ")
+        word = word.replace(":"," ")
+        word = word.replace("-"," ")
+        word = word.replace(","," ")
+        word = word.replace("<"," ")
+        word = word.replace(">"," ")
+        word = word.replace("["," ")
+        word = word.replace("]"," ")
+        word = word.replace("?"," ")
+        word = word.replace("+"," ")
+        word = word.replace("”"," ")
+        word = word.replace(";"," ")
+        word = word.replace("*"," ")
+        word = word.replace("~"," ")
+        word = word.replace("_"," ")
+        word = word.replace("¿"," ")      
+        word = word.replace("^"," ")
+        word = word.replace("’"," ")         
         return word
     
     def remove_step_words(self):
@@ -58,6 +60,7 @@ class Classifier:
         for step_word in step_words:
             if(step_word in self.vocabulary):
                 self.vocabulary.remove(step_word)
+        self.dao.insert('base', {'words': self.vocabulary})
 
     def create_database_trainer(self, items):
         for item in items:
@@ -65,7 +68,7 @@ class Classifier:
             vector = []
             self.modules[item["moduleId"]] = item["module"]
             while i < len(self.vocabulary):
-                if self.vocabulary[i] in item["name"].split(" "):
+                if self.vocabulary[i] in self._format_word(item["textEn"]).split(" "):
                     vector.append(1)
                 else:
                     vector.append(0)
@@ -106,4 +109,5 @@ class Classifier:
         vocabulary_base = open("configs/vocabularyBase.txt","w")       
         for word in self.vocabulary:
             vocabulary_base.write(word + "\n")
+
         vocabulary_base.close()
